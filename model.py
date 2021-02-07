@@ -457,7 +457,7 @@ print(test_counts_label/ len(original_ytest))
 # Since our classes are highly skewed we should make them equivalent in order to have a normal distribution of the classes.
 # shuffle the data before creating the subsamples
 #Using Random Undersampling
-insurance_data = insurance_data.sample(frac=1)
+insurance_data = insurance_data.sample(frac=0.1)
 
 # amount of fraud classes 251896 rows.
 fraud_data = insurance_data.loc[insurance_data['Result'] == 0]
@@ -466,7 +466,7 @@ non_fraud_data = insurance_data.loc[insurance_data['Result'] == 1][:251896]
 normal_dist_data = pd.concat([fraud_data, non_fraud_data])
 
 # Shuffle dataframe rows
-new_insurance = normal_dist_data.sample(frac=1, random_state=42)
+new_insurance = normal_dist_data.sample(frac=0.01, random_state=42)
 
 new_insurance.head()
 
@@ -518,12 +518,12 @@ for key, classifier in classifiers.items():
 
 #Upsampling: Random forest classifier
 #Divinding data into majority n minority class
-data_minority = insurance_data.loc[insurance_data['Result']==0]
-data_majority = insurance_data.loc[insurance_data['Result']==1]
+data_minority = new_insurance.loc[insurance_data['Result']==0]
+data_majority = new_insurance.loc[insurance_data['Result']==1]
 
 #Resampling 
 from sklearn.utils import resample
-data_minority_upsampled = resample(data_minority, replace=True, n_samples=753678, random_state=42)
+data_minority_upsampled = resample(data_minority, replace=True, n_samples=500, random_state=42)
 
 data_upsampled = pd.concat([data_majority, data_minority_upsampled ], ignore_index=True)
 
@@ -555,7 +555,15 @@ print(classification_report(Y_test, Y_pred_test))
 import pickle
 pickle.dump(model_RF_upsampled,open('C:/Users/Ashmita Agrawal/Desktop/Learning/Deployment of project using Flask/model.pkl','wb'))
 model = pickle.load(open('C:/Users/Ashmita Agrawal/Desktop/Learning/Deployment of project using Flask/model.pkl','rb'))
-print(model.predict([[0.242622,-1.81343,0.0575983,-0.431916,0.117021,1.40793,0.164773,-1.1564,-0.762526,-0.454413,-0.430081,-0.0626997]]))
+labelencoder_X = LabelEncoder()
+final_features = np.array([37,'30 to 49',4,'Home Care',122,0,'Medical',1,1,5511.95,5582.49,1.0128])
+for i in final_features:
+    final_features= labelencoder_X.fit_transform(final_features)
+    print(final_features)
+scaler = StandardScaler()
+final = pd.DataFrame(final_features)
+final_features = np.array([final_features])
+print(model.predict(final_features))
 
 
 #confusion matrix for test data
