@@ -10,9 +10,12 @@ body {
   <meta charset="UTF-8">
 <h1><center> Welcome to Fraud Detection Model</center> </h1>
 </head>
+<head>
+  <meta charset="UTF-8">
+<h1 style="color:red;"><center>    {{ prediction_text }} </center> </h1>
+</head>
 <br><br><br><br>
-<form>
-<form action="/predict" method="post">
+<form action="{{ url_for('predict')}}" method="post">
         <center>
              <!-- Main Input For Receiving Query to our ML -->
     	<input type="text" name="Hospital_Id" placeholder="Hospital Id" required="required" /><br><br>
@@ -28,11 +31,11 @@ body {
         <input type="text" name="Total_Cost" placeholder="Total_Cost" required="required" /><br><br>
         <input type="text" name="Ratio_of_total_cost_charge" placeholder="Ratio" required="required" /><br><br>
 
-        <button type="submit">Predict</button></center>
+        <button type="submit" class = "button">Predict</button></center>
     </form>
 
    <br>
    <br>
-   {{ prediction_text }}
+
 </body>
 </html>
